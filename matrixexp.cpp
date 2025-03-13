@@ -1,3 +1,6 @@
+// This is a dynamic programming problem (CSES Counting Towers)
+// But it can also be solved in this way, using matrix exponentiation, in O(log n)
+
 #include <bits/stdc++.h>
 using namespace std;
  
