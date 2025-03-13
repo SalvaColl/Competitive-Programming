@@ -1,2 +1,2 @@
 # Competitive-Programming
-Some interesting competitive programming problems
+Some interesting competitive programming problems and templates
