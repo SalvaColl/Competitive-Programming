@@ -30,28 +30,23 @@ int main() {
     ll x, a, b, c;
     cin >> x >> a >> b >> c;
 
-    vi nums(n);
+    vll nums(n);
     nums[0] = x;
     rep(i, 1, n) {
         nums[i] = (a*nums[i-1]+b)%c;
     }
 
-    int i = 0;
-    int j = 1;
-
     ll total = 0;
-    ll window = nums[0];
-    bool first = true;
-    while(j < n) {
-        window ^= nums[j];
-        if(j - i + 1 < k) {
-            ++j;
-        } else if(j - i + 1 == k) {
-            total ^= window;
-            window ^= nums[i];
-            i++;
-            ++j;
-        }
+    ll window = 0;
+    rep(i, 0, k) {
+        window ^= nums[i];
+    }
+    total = window;
+
+    rep(i, k, n) {
+        window ^= nums[i];
+        window ^= nums[i-k];
+        total ^= window;
     }
     cout << total << nl;
 }

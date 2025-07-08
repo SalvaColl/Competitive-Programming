@@ -1,15 +1,13 @@
+#pragma GCC optimize("Ofast,unroll-loops,fast-math")
+#pragma GCC target("avx2")
+
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp> 
-#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
-using namespace __gnu_pbds;
 using ll = long long;
 using str = string;
 using pii = pair<int, int>;
 using vi = vector<int>;
 using vll = vector<long long>;
-#define ordered_set tree<pair<ll, ll>, null_type, less<pair<ll,ll>>, rb_tree_tag, tree_order_statistics_node_update>
-#define dbg(v) cout << "Line(" << __LINE__ << ") -> " << #v << " = " << (v) << endl;
 #define rep(i, a, n) for(int i = a; i < n; i++)
 #define size(a)   (int)a.size()
 #define len(a)    (int)a.length()
@@ -30,42 +28,34 @@ int main() {
     ll x, a, b, c;
     cin >> x >> a >> b >> c;
 
-    vi nums(n);
+    vll nums(n);
     nums[0] = x;
     rep(i, 1, n) {
         nums[i] = (a*nums[i-1]+b)%c;
     }
 
-    int bitCount[32] = {0};
+    vll pref(n);
+    rep(i, 0, n) {
+        if(i % k == 0) {
+            pref[i] = nums[i];
+        } else {
+            pref[i] = pref[i-1] | nums[i];
+        }
+    }
+
+    vll suff(n);
+    for(int i = n-1; i >= 0; i--) {
+        if(i == n-1 || i % k == k-1) {
+            suff[i] = nums[i];
+        } else {
+            suff[i] = suff[i+1] | nums[i];
+        }
+    }
+
     ll total = 0;
-    ll window = 0;
-
-    int i = 0;
-    int j = 0;
-    while(j < n) {
-        rep(bit, 0, 32) {
-            if(nums[j] & (1LL << bit)) {
-                bitCount[bit]++;
-                if(bitCount[bit] == 1) {
-                    window |= (1LL << bit);
-                }
-            }
-        }
-
-        if(j - i + 1 < k) ++j;
-        else {
-            total ^= window;
-            rep(bit, 0, 32) {
-                if(nums[j] & (1LL << bit)) {
-                    bitCount[bit]--;
-                    if(bitCount[bit] == 0) {
-                        window &= ~(1LL << bit);
-                    }
-                }
-            }
-            ++i;
-            ++j;
-        }
+    for(int i = 0; i+k-1 < n; i++) {
+        ll window = suff[i] | pref[i+k-1];
+        total ^= window;
     }
     cout << total << nl;
 }
